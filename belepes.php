@@ -31,3 +31,5 @@
         ?>
     </body>
 </html>
+
+ezt a kódot javítani kell
