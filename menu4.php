@@ -8,8 +8,19 @@
   </div>
   
   <div class="container-fluid d-inline">
-    <h4 class="fw-bold">E-mail:</h4> <h4 class="text-muted">info@pecsimami.hu </h4> <h4 class="fw-bold">Telefon:</h4> <h4 class="text-muted">70/350-2099</h4>
+    <form action="/email.php" method="post">
+    <label for="lname">Vezetéknév:</label>
+    <input class="form-control type="text" id="lname" name="lname" placeholder="a vezetékneved...">
+
+    <label for="fname">Keresztnév:</label>
+    <input class="form-control type="text" id="fname" name="fname" placeholder="a keresztneved...">
+
+    <label for="subject">Üzenet:</label>
+    <textarea class="form-control id="subject" name="subject" placeholder="Írja meg az üzenetet..." style="height:200px"></textarea>
+
+    <input type="submit" class="btn btn-outline-secondary" value="Küldés" style="margin-top:15px;">
+  </form>
   </div>
  
-  <div><iframe  src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d9311.055739063142!2d18.208884073635367!3d46.06718406848093!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sp%C3%A9csi%20mami!5e0!3m2!1shu!2shu!4v1648732871168!5m2!1shu!2shu" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  
   

@@ -1,19 +1,17 @@
 
-   
-   
-   <form action = "index.php" method = "post">
+    <form action = "index.php" method = "post">
         <fieldset>
-          <legend>Bejlentkezés</legend>
+          <legend>Bejelentkezés</legend>
           <br>
           <div class="row">
             <div class="col">
-              <input type="text" class="form-control" placeholder="Felhasználónév" aria-label="felhasznalo" name="felhasznalo"required>
+              <input type="text" class="form-control" placeholder="Felhasználónév" aria-label="felhasznalo" name="username"required>
             </div>
             <div class="col">
-              <input type="password" class="form-control" placeholder="Jelszó" aria-label="jelszo" name="jelszo" required>
+              <input type="password" class="form-control" placeholder="Jelszó" aria-label="jelszo" name="password" required>
             </div>
           </div><br>
-          <input type="submit" class="btn btn-outline-secondary" name="regisztracio" value="Belépés">
+          <input type="submit" class="btn btn-outline-secondary" name="belepes" value="Belépés">
           <br>&nbsp;
         </fieldset>
       </form>

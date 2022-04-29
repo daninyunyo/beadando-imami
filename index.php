@@ -1,21 +1,24 @@
 <?php
-    if(isset($_POST['felhasznalo']) && isset($_POST['jelszo'])) {
-        try {
-            // Kapcsolódás
-            $dbh = new PDO('mysql:host=localhost;dbname=imami', 'root', '',
-                            array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
-            $dbh->query('SET NAMES utf8 COLLATE utf8_hungarian_ci');
-            
-            // Felhsználó keresése
-            $sqlSelect = "select id, csaladi_nev, uto_nev from felhasznalok where bejelentkezes = :bejelentkezes and jelszo = sha1(:jelszo)";
-            $sth = $dbh->prepare($sqlSelect);
-            $sth->execute(array(':bejelentkezes' => $_POST['felhasznalo'], ':jelszo' => $_POST['jelszo']));
-            $row = $sth->fetch(PDO::FETCH_ASSOC);
-        }
-        catch (PDOException $e) {
-            echo "Hiba: ".$e->getMessage();
-        }      
-    }
+session_start();
+ require('connect.php');
+
+if (isset($_POST['username']) and isset($_POST['password'])){
+
+$username = $_POST['username'];
+$password = sha1($_POST['password']);
+
+$query = "SELECT * FROM `user` WHERE username='$username' and password='$password'";
+ 
+$result = mysqli_query($connection, $query) or die(mysqli_error($connection));
+$count = mysqli_num_rows($result);
+
+if ($count == 1){
+$_SESSION['username'] = $username;
+}else{
+
+$fmsg = "Felhasználónév vagy jelszó hibás!";
+}
+}
 ?>
 
 <!doctype html>
@@ -24,11 +27,12 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="localhost">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link href="style.css" rel="stylesheet" type="text/css">
+    
     <title>PecsiMami</title>
   </head>
 
@@ -39,38 +43,40 @@
 
 <div class="text-center">
         <img src="img/logo.png" class="rounded img-fluid" style="max-width: 50%;" alt="PecsimMami_logo">
-      </div>
+</div>
 
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: rgb(255, 179, 136);" >
         <div class="container-fluid">
             <a class="navbar-brand" style="font-size:large; " href="https://pecsimami.hu/ingatlan">PécsiMami</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" style="font-size:large;" id="navbarNav">
-              <ul class="navbar-nav">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent" style="font-size:large;" >
+              <ul class="navbar-nav mr-auto float-end ">
                 <?php
-                $menuk = array("Főoldal", "Belépés", "Galéria", "Videó", "Kapcsolat");
+                $menuk = array("Főoldal", "Belépés", "Galéria", "Videó", "Kapcsolat", "Üzenetek");
                 $db = count($menuk);
                 for ($i=0; $i<$db; $i++)
                 {
-                echo '<li class="nav-item">
+                echo '<li class="nav-item float-end">
                         <a class="nav-link active" aria-current="page" href="index.php?d='.$i.'">'.$menuk[$i].'</a>
                       </li>';
                 }
                 ?>
-                <li class="nav-item">
-                <?php if(isset($row)) {
-                    if($row) {
-                    echo "Belépett: <strong>".$row['csaladi_nev']." ".$row['uto_nev']."</strong>";
-                    } else { echo "Sikertelen belépés!"; } 
-                }
-        ?>
-                </li>
               </ul>
             </div>
           </div>
         </nav>
+        <div style="padding:20px;">
+        <?php
+              if (isset($_SESSION['username'])){
+                $username = $_SESSION['username'];
+                echo "Belépett felhasználó: " . $username . "&nbsp;&nbsp;&nbsp;";
+                echo "<a href='logout.php' class='btn btn-outline-danger'>Kijelentkezés</a>";
+                }
+        ?>
+        </div>   
+        <?php if(isset($fmsg)){ ?><div class="alert alert-danger" role="alert"> <?php echo $fmsg; ?> </div><?php } ?>
 
 <div class="col order-first col-md-8 offset-md-1" style="float:left; margin-top:15px;">
   <?php 
@@ -83,13 +89,16 @@
     case 2: include "menu2.php"; break;
     case 3: include "menu3.php"; break;
     case 4: include "menu4.php"; break;
+    case 5: include "menu5.php"; break;
+    case 6: include "menu6.php"; break;
+    case 7: include "sikeresuzenet.php"; break;
     default: include "menu0.php"; break;
     }
 
   ?>
-
-  </div>
-  <div style="display: inline-grid;
+</div>
+  
+ <div style="display: inline-grid;
     float: right; width:20%; margin:20px;">
             <h3 class="float-end"> 
                 Jelentkezz
@@ -97,7 +106,7 @@
             </h3>
             <img src="img/iratkozz.png"  style="max-width: 100%;" alt="iratkozz fel"><br>
             <br> <img src="img/csalad.png"  style="max-width: 100%;" alt="csalad">
-        </div>
+  </div>
   
 
   </body>
